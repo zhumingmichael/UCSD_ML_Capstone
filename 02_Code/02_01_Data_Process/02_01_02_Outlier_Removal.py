@@ -49,7 +49,7 @@ def Outlier_Detection(Se, returnType = 'relative',Chebyshev_k=20,\
 ##### Outlier Remove #####
 datapath = sMyPath + r'\01_Input\01_02_RawData\Tiingo_Stock_daily'
 savepath = sMyPath + r'\01_Input\01_03_ProcessedData\Tiingo_Stock_daily_Outlier_Removed'
-AvaTickers_df = pd.read_excel(sMyPath + r"\01_Input\01_01_DataCodes\sNA_Select_Tickers.xlsx")
+AvaTickers_df = pd.read_csv(sMyPath + r"\01_Input\01_01_DataCodes\sNA_Select_Tickers.csv")
 AvaTickers  = AvaTickers_df.Tickers.values
 
 
@@ -71,10 +71,10 @@ for iTicker in range(len(AvaTickers)):
     ## Import the stock data
     Ticker = AvaTickers[iTicker]
     
-    Sdata = pd.read_csv(datapath + r"\\" + Ticker + "_daily.csv") 
+    Sdata = pd.read_pickle(datapath + r"\\" + Ticker + "_daily.zip") 
     Sdata['date'] = [DT.strptime(x[:10], "%Y-%m-%d") for x in Sdata['date']]
     
-    ## relatives
+    ## relatives transformation
     RelativeCols = Sdata[['open', 'high', 'low', 'close', 'adjOpen', 'adjHigh',\
                           'adjLow', 'adjClose']]
     RelativeCols = RelativeCols.apply(lambda x: Outlier_Detection(x,returnType = 'relative',\
@@ -83,18 +83,16 @@ for iTicker in range(len(AvaTickers)):
     Sdata[['open', 'high', 'low', 'close', 'adjOpen', 'adjHigh',\
                           'adjLow', 'adjClose']] = RelativeCols
         
-    ## absolute
+    ## absolute transformation
     AbsoluteCols = Sdata[['volume', 'adjVolume']]
     AbsoluteCols = AbsoluteCols.apply(lambda x: Outlier_Detection(x,returnType = 'absolute',\
                                               Chebyshev_k=20, method = 'Chebyshev')[0])
         
     Sdata[['volume', 'adjVolume']] = AbsoluteCols
-    Sdata = Sdata
-    
-    Sdata = Sdata[Sdata['date']>=DT(2010,1,1)]
+    Sdata = Sdata[Sdata['date']>=DT(2009,12,1)]
 
     ## Save processed data
-    Sdata.to_csv(savepath + r"\\" + Ticker + "_daily.csv", index=False)
+    Sdata.to_pickle(savepath + r"\\" + Ticker + "_daily.zip")
     ## Check Na amount
     OutlierStats = Sdata.apply(lambda x: sum(np.isnan(x)) )
     OutlierStats.name = Ticker

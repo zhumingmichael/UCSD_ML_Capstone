@@ -199,6 +199,18 @@ Ret_Q.columns = [str(x)+r"_Ret_Q" for x in Price_DF.columns]
 Vol_Q = Ret_Q**2
 Vol_Q.columns = [str(x)+r"_Vol_Q" for x in Price_DF.columns]
 
+Price_log.to_pickle(savepath + r"\Price_log.zip")
+Ret_D.to_pickle(savepath + r"\Ret_D.zip")
+Vol_D.to_pickle(savepath + r"\Vol_D.zip")
+Ret_W.to_pickle(savepath + r"\Ret_W.zip")
+Vol_W.to_pickle(savepath + r"\Vol_W.zip")
+Ret_M.to_pickle(savepath + r"\Ret_M.zip")
+Vol_M.to_pickle(savepath + r"\Vol_M.zip")
+Ret_Q.to_pickle(savepath + r"\Ret_Q.zip")
+Vol_Q.to_pickle(savepath + r"\Vol_Q.zip")
+
+
+
 
 Price = pd.concat([Price_log, Ret_D, Vol_D,\
                    Ret_W, Vol_W, Ret_M, Vol_M, Ret_Q, Vol_Q], axis=1)

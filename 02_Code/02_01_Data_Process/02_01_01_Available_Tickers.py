@@ -95,7 +95,7 @@ for iTicker in range(len(Cap_Pass_Tickers)):
     ## Import the stock data
     Ticker = Cap_Pass_Tickers[iTicker]
     
-    Sdata = pd.read_csv(datapath + r"\\" + Ticker + "_daily.csv")
+    Sdata = pd.read_pickle(datapath + r"\\" + Ticker + "_daily.zip")
     # Sdata.columns
     if len(Sdata) >0:
         
@@ -139,8 +139,6 @@ for iTicker in range(len(Cap_Pass_Tickers)):
           "Average time:" + str(AvgTime) + "\n" +
           "Estimate end:" + str(EstEnd) + '\n'  )
 
-
-
 TickerSummary = TickerSummary.T
 
 Ana = DC(TickerSummary)
@@ -150,8 +148,7 @@ Ana = Ana[[DT.strptime(x[:10], "%Y-%m-%d")<= DT(2010,1,1) for x in Ana['Start_da
 Ana = Ana[Ana.sVol_prop<=2.5/100]
 
 sVol_Select_Tickers = pd.Series(list(Ana.index))
-sVol_Select_Tickers.to_excel(sMyPath + r"\01_Input\sVol_Select_Tickers.xlsx",index=False)
-
+sVol_Select_Tickers.to_csv(sMyPath + r"\01_Input\01_01_DataCodes\sVol_Select_Tickers.csv",index=False)
 
 
 
@@ -170,7 +167,7 @@ for iTicker in range(len(sVol_Select_Tickers)):
     ## Import the stock data
     Ticker = sVol_Select_Tickers[iTicker]
     
-    Sdata = pd.read_csv(datapath + r"\\" + Ticker + "_daily.csv") 
+    Sdata = pd.read_pickle(datapath + r"\\" + Ticker + "_daily.zip") 
     Sdata['date'] = [DT.strptime(x[:10], "%Y-%m-%d") for x in Sdata['date']]
     Sdata = Sdata.drop_duplicates(subset = ['date'],keep ='last')
     
@@ -220,7 +217,7 @@ P_l_Ori.to_csv('P_l_Ori.csv')
 V_l_Adj.to_csv('V_l_Adj.csv')
 V_l_Ori.to_csv('V_l_Ori.csv')
 
-P_l_Adj2010 = DC(P_l_Adj[P_l_Adj.index>=DT(2010,1,1)])
+# P_l_Adj2010 = DC(P_l_Adj[P_l_Adj.index>=DT(2010,1,1)])
 # ## Time the loop
 # S_time = DT.now()
 # for iTicker in range(len(sVol_Select_Tickers)):
@@ -249,11 +246,12 @@ P_l_Adj2010 = DC(P_l_Adj[P_l_Adj.index>=DT(2010,1,1)])
 #           "Estimate end:" + str(EstEnd) + '\n'  )
 
 
+#### save the tickers with available data after 2010
+P_l_Adj2010 = DC(P_l_Adj[P_l_Adj.index>=DT(2009,12,1)])
 Na_stats = P_l_Adj2010.apply(lambda x: sum(x.isna()))
 sNA_Select_Tickers = pd.Series(np.setdiff1d(sVol_Select_Tickers.values,\
                                              np.array(['VAL','ENR']) ))
 
-# sNA_Select_Tickers = pd.read_excel(sMyPath + r"\01_Input\sNA_Select_Tickers.xlsx")
 sNA_Select_Tickers.columns = ['Tickers']
 sNA_Select_Tickers = Stock_Screener_Ava.merge(sNA_Select_Tickers)
-sNA_Select_Tickers.to_excel(sMyPath + r"\01_Input\sNA_Select_Tickers.xlsx",index=False)
+sNA_Select_Tickers.to_csv(sMyPath + r"\01_Input\01_01_DataCodes\sNA_Select_Tickers.csv", index = False)
