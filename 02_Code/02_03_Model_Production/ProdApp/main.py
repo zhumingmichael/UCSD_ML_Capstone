@@ -55,15 +55,11 @@ SNum = np.array(range(len(AvaTickers)))
 model_dict = dict()
 for iTicker in SNum:
     Ticker = AvaTickers[iTicker]
-    # model_dict[Ticker] = load_model(save_dir + r"\\" + Ticker + r"_Prod_e" + str(epochs) + r".h5")
-    model_dict[Ticker] = load_model(save_dir + r"\\" + Ticker + r"_Train_e" + str(epochs) + r".h5")
+    model_dict[Ticker] = load_model(save_dir + r"\\" + Ticker + r"_Prod_e" + str(epochs) + r".h5")
     print(r"Import model " + Ticker + r" (" + str(iTicker+1) + r"/" + str(len(SNum)) + r")" )
 
 
 #### 0.4 Data import setting
-
-Token = 'ddff0c680755cd0a68288e345d4e422e30e2c07b'      # zhuming.michaelzm@gmail.com Michaelzm
-headers = { 'Content-Type': 'application/json' }
 P_df = pd.read_csv(sMyPath + r"\sample_data.csv", index_col='Unnamed: 0')
 
 
